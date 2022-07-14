@@ -15,18 +15,16 @@ limitations under the License.
 -->
 
 <template>
-  <div id="q-app">
-    <q-ajax-bar color="grey" />
-    <router-view />
-    <q-btn
-      @click="viewExceptions"
-      class="fixed-bottom-right q-ma-lg"
-      flat
-      v-if="showExceptionIcon"
-    >
-      <q-icon name="warning" style="font-size: 2.5em; color: red" />
-    </q-btn>
-  </div>
+  <q-ajax-bar color="grey" />
+  <router-view />
+  <q-btn
+    @click="viewExceptions"
+    class="fixed-bottom-right q-ma-lg"
+    flat
+    v-if="showExceptionIcon"
+  >
+    <q-icon name="warning" style="font-size: 2.5em; color: red" />
+  </q-btn>
 </template>
 
 <script>
