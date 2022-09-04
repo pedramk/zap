@@ -324,6 +324,28 @@ INTO ENDPOINT (
 }
 
 /**
+* @export
+* @param {*} db
+* @param {*} id
+* @param {*} endpointIdentifier
+* @returns Promise to duplicate an endpoint.
+*/
+async function duplicateEndpoint( db, id, endpointIdentifier, endpointTypeId ) {
+  return dbApi.dbInsert( db,
+    `
+    insert into ENDPOINT (SESSION_REF,ENDPOINT_IDENTIFIER,ENDPOINT_TYPE_REF,NETWORK_IDENTIFIER,DEVICE_VERSION,DEVICE_IDENTIFIER,PROFILE)
+    select SESSION_REF, ? , ? ,NETWORK_IDENTIFIER,DEVICE_VERSION,DEVICE_IDENTIFIER,PROFILE
+    from ENDPOINT
+    where ENDPOINT_ID = ?`,
+    [
+      endpointIdentifier,
+      endpointTypeId,
+      id
+    ]
+  )
+}
+
+/**
  * Returns a promise of a single endpoint.
  * Mayb resolve into null if invalid reference.
  *
@@ -359,5 +381,6 @@ exports.selectEndpointClusterAttributes = selectEndpointClusterAttributes
 exports.selectEndpointClusterCommands = selectEndpointClusterCommands
 exports.insertEndpoint = insertEndpoint
 exports.deleteEndpoint = deleteEndpoint
+exports.duplicateEndpoint = duplicateEndpoint
 exports.selectEndpoint = selectEndpoint
 exports.selectAllEndpoints = selectAllEndpoints

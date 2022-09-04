@@ -23,6 +23,8 @@ const uri = {
   generate: '/generate',
   endpoint: '/endpoint',
   endpointType: '/endpointType',
+  duplicateEndpoint: '/duplicateEndpoint',
+  duplicateEndpointType: '/duplicateEndpointType',
   initialState: '/initialState',
   dirtyFlag: '/dirtyFlag',
   option: '/option',

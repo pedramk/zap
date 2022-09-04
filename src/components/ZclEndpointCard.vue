@@ -30,10 +30,20 @@ limitations under the License.
           <q-btn
             flat
             dense
+            color="primary"
+            label="Copy"
+            v-close-popup
+            size="xs"
+            icon="content_copy"
+            @click="duplicateEndpoint()"
+          />
+          <q-btn
+            flat
+            dense
             label="Delete"
             color="primary"
             v-close-popup
-            size="sm"
+            size="xs"
             icon="delete"
             @click="handleDeletionDialog"
           />
@@ -43,7 +53,7 @@ limitations under the License.
             label="Edit"
             color="primary"
             icon="edit"
-            size="sm"
+            size="xs"
             v-close-popup
             @click="modifyEndpointDialog = !modifyEndpointDialog"
           />
@@ -191,6 +201,29 @@ limitations under the License.
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog
+      v-model="showConfirmCopyEndpointModal"
+      class="background-color:transparent"
+    >
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Copy Endpoint</div>
+
+          Do you want to copy the endpoint?
+        </q-card-section>
+        <q-card-actions>
+          <q-btn label="Cancel" v-close-popup class="col" />
+          <q-btn
+            label="Copy"
+            color="primary"
+            class="col"
+            v-close-popup="deleteEndpointDialog"
+            @click="duplicateEndpoint()"
+            id="copy_endpoint"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -215,6 +248,7 @@ export default {
       confirmDeleteEndpointDialog: false,
       deleteingleEndpointDialog: false,
       showAllInformationOfEndpoint: false,
+      showConfirmCopyEndpointModal: false,
       selectedservers: [],
       selectedAttributes: [],
       selectedReporting: [],
@@ -270,6 +304,18 @@ export default {
         )
       })
     },
+    duplicateEndpoint() {
+      this.$store
+        .dispatch('zap/duplicateEndpointType', {
+          endpointTypeId: this.endpointType[this.endpointReference],
+        }).then(res => {
+          this.$store.dispatch('zap/duplicateEndpoint', {
+            endpointId: this.endpointReference,
+            endpointIdentifier: this.getSmallestUnusedEndpointId(),
+            endpointTypeId: res.id,
+          })
+        })
+    },
     toggleShowAllInformationOfEndpoint() {
       this.showAllInformationOfEndpoint = !this.showAllInformationOfEndpoint
     },
@@ -314,6 +360,9 @@ export default {
               this.selectedReporting.push(resolvedReference)
           })
         })
+    },
+    toggleCopyEndpointModal() {
+      this.showConfirmCopyEndpointModal = !this.showConfirmCopyEndpointModal
     },
   },
   computed: {
@@ -392,6 +441,8 @@ export default {
   },
   created() {
     if (this.$serverGet != null) {
+      this.selectedservers =  []
+      this.selectedReporting = []
       this.getEndpointCardData()
     }
   },
